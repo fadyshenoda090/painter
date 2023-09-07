@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw and Erase on Canvas</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600" style="border: 1px solid #000;"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let eraseMode = false;
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            draw(e);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                draw(e);
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+            ctx.beginPath();
+        });
+
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.button === 2) {
+                eraseMode = true;
+            }
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            if (e.button === 2) {
+                eraseMode = false;
+            }
+        });
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const { offsetX, offsetY } = e;
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+
+            if (eraseMode) {
+                ctx.strokeStyle = 'white'; 
+            } else {
+                ctx.strokeStyle = 'black'; 
+            }
+
+            ctx.lineTo(offsetX, offsetY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(offsetX, offsetY);
+        }
+    </script>
+</body>
+</html>
